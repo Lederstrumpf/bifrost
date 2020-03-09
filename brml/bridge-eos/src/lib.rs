@@ -33,7 +33,7 @@ use sp_std::prelude::*;
 use sp_core::offchain::StorageKind;
 use sp_runtime::{
 	offchain::http,
-	traits::{Member, SaturatedConversion, SimpleArithmetic},
+	traits::{Member, SaturatedConversion, AtLeast32Bit},
 	transaction_validity::{
 		InvalidTransaction, TransactionLongevity, TransactionPriority,
 		TransactionValidity, ValidTransaction, TransactionValidityError
@@ -152,10 +152,10 @@ pub trait Trait: pallet_authorship::Trait + assets::Trait {
 	type Event: From<Event> + Into<<Self as frame_system::Trait>::Event>;
 
 	/// The units in which we record balances.
-	type Balance: Member + Parameter + SimpleArithmetic + Default + Copy;
+	type Balance: Member + Parameter + AtLeast32Bit + Default + Copy;
 
 	/// The units in which we record asset precision.
-	type Precision: Member + Parameter + SimpleArithmetic + Default + Copy;
+	type Precision: Member + Parameter + AtLeast32Bit + Default + Copy;
 
 	/// Bridge asset from another blockchain.
 	type BridgeAssetFrom: BridgeAssetFrom<Self::AccountId, Self::Precision, <Self as assets::Trait>::Balance>;
@@ -585,8 +585,8 @@ impl<T: Trait> Module<T> {
 		bridge_asset: BridgeAssetBalance<P, B>,
 	) -> Result<TxOut<T::AccountId>, Error>
 		where
-			P: SimpleArithmetic,
-			B: SimpleArithmetic,
+			P: AtLeast32Bit,
+			B: AtLeast32Bit,
 	{
 		let (raw_from, threshold) = BridgeContractAccount::get();
 		let amount = Self::convert_to_eos_asset::<P, B>(bridge_asset)?;
@@ -704,8 +704,8 @@ impl<T: Trait> Module<T> {
 		bridge_asset: BridgeAssetBalance<P, B>
 	) -> Result<Asset, Error>
 		where
-			P: SimpleArithmetic,
-			B: SimpleArithmetic
+			P: AtLeast32Bit,
+			B: AtLeast32Bit
 	{
 		let precision = bridge_asset.symbol.precision.saturated_into::<u8>();
 		let symbol_str = core::str::from_utf8(&bridge_asset.symbol.symbol)

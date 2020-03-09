@@ -19,7 +19,7 @@
 
 use core::convert::TryInto;
 use frame_support::{Parameter, decl_module, decl_event, decl_storage, ensure, debug};
-use sp_runtime::traits::{Member, SimpleArithmetic, One, Zero, StaticLookup};
+use sp_runtime::traits::{Member, AtLeast32Bit, One, Zero, StaticLookup};
 use sp_std::prelude::*;
 use system::{ensure_signed, ensure_root};
 use node_primitives::{
@@ -35,10 +35,10 @@ pub trait Trait: system::Trait {
 	type Event: From<Event<Self>> + Into<<Self as system::Trait>::Event>;
 
 	/// The units in which we record balances.
-	type Balance: Member + Parameter + SimpleArithmetic + Default + Copy + Zero + From<Self::BlockNumber>;
+	type Balance: Member + Parameter + AtLeast32Bit + Default + Copy + Zero + From<Self::BlockNumber>;
 
 	/// The arithmetic type of asset identifier.
-	type AssetId: Member + Parameter + SimpleArithmetic + Default + Copy;
+	type AssetId: Member + Parameter + AtLeast32Bit + Default + Copy;
 
 	/// Handler for asset redeem
 	type AssetRedeem: AssetRedeem<Self::AssetId, Self::AccountId, Self::Balance>;

@@ -23,16 +23,16 @@ use core::convert::{From, Into};
 use frame_support::{decl_event, decl_module, decl_storage, ensure, Parameter};
 use frame_system::{self as system, ensure_root, ensure_signed};
 use node_primitives::{AssetRedeem, TokenType};
-use sp_runtime::traits::{Member, Saturating, SimpleArithmetic};
+use sp_runtime::traits::{Member, Saturating, AtLeast32Bit};
 
 pub trait Trait: assets::Trait {
 	/// fee
-	type Fee: Member + Parameter + SimpleArithmetic + Default + Copy + Into<Self::TokenPool> + Into<Self::VTokenPool>;
+	type Fee: Member + Parameter + AtLeast32Bit + Default + Copy + Into<Self::TokenPool> + Into<Self::VTokenPool>;
 
 	/// pool size
-	type TokenPool: Member + Parameter + SimpleArithmetic + Default + Copy + Into<<Self as assets::Trait>::Balance> + From<<Self as assets::Trait>::Balance>;
-	type VTokenPool: Member + Parameter + SimpleArithmetic + Default + Copy + From<<Self as assets::Trait>::Balance> + Into<<Self as assets::Trait>::Balance>;
-	type InVariantPool: Member + Parameter + SimpleArithmetic + Default + Copy + From<<Self as assets::Trait>::Balance> + Into<<Self as assets::Trait>::Balance>;
+	type TokenPool: Member + Parameter + AtLeast32Bit + Default + Copy + Into<<Self as assets::Trait>::Balance> + From<<Self as assets::Trait>::Balance>;
+	type VTokenPool: Member + Parameter + AtLeast32Bit + Default + Copy + From<<Self as assets::Trait>::Balance> + Into<<Self as assets::Trait>::Balance>;
+	type InVariantPool: Member + Parameter + AtLeast32Bit + Default + Copy + From<<Self as assets::Trait>::Balance> + Into<<Self as assets::Trait>::Balance>;
 
 	/// event
 	type Event: From<Event> + Into<<Self as frame_system::Trait>::Event>;

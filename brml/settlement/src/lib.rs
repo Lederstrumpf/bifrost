@@ -23,7 +23,7 @@ use node_primitives::{ClearingHandler, AssetIssue};
 use frame_support::{
 	Parameter, decl_module, decl_event, decl_storage, traits::Get
 };
-use sp_runtime::traits::{Member, SimpleArithmetic, One, Zero, SaturatedConversion, Saturating};
+use sp_runtime::traits::{Member, AtLeast32Bit, One, Zero, SaturatedConversion, Saturating};
 
 mod mock;
 mod tests;
@@ -39,9 +39,9 @@ pub struct BalanceDuration<BlockNumber, Balance, Duration> {
 }
 
 impl<BlockNumber, Balance, Duration> BalanceDuration<BlockNumber, Balance, Duration> where
-	BlockNumber: Copy + SimpleArithmetic,
-	Balance: Copy + SimpleArithmetic + From<BlockNumber>,
-	Duration: Copy + SimpleArithmetic + From<Balance>,
+	BlockNumber: Copy + AtLeast32Bit,
+	Balance: Copy + AtLeast32Bit + From<BlockNumber>,
+	Duration: Copy + AtLeast32Bit + From<Balance>,
 {
 	fn new<SettlementId, SettlementPeriod>(
 		stl_id: SettlementId,
@@ -50,7 +50,7 @@ impl<BlockNumber, Balance, Duration> BalanceDuration<BlockNumber, Balance, Durat
 		curr_amount: Balance,
 	) -> Self
 		where
-			SettlementId: Copy + SimpleArithmetic,
+			SettlementId: Copy + AtLeast32Bit,
 			SettlementPeriod: Get<BlockNumber>,
 	{
 		let stl_index = stl_id.saturated_into::<u64>();
@@ -80,13 +80,13 @@ pub trait Trait: system::Trait + brml_assets::Trait {
 	type Event: From<Event<Self>> + Into<<Self as system::Trait>::Event>;
 
 	/// Settlement id
-	type SettlementId: Member + Parameter + SimpleArithmetic + Default + Copy + Into<Self::BlockNumber>;
+	type SettlementId: Member + Parameter + AtLeast32Bit + Default + Copy + Into<Self::BlockNumber>;
 
 	/// How often (in blocks) new settlement are started.
 	type SettlementPeriod: Get<Self::BlockNumber>;
 
 	/// The value that represent the duration of balance.
-	type Duration: Member + Parameter + SimpleArithmetic + Default + Copy + From<Self::Balance>;
+	type Duration: Member + Parameter + AtLeast32Bit + Default + Copy + From<Self::Balance>;
 
 	// Assets issue handler
 	type AssetIssue: AssetIssue<Self::AssetId, Self::AccountId, Self::Balance>;

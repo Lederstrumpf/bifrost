@@ -21,12 +21,12 @@ mod tests;
 use frame_support::{Parameter, decl_event, decl_module, decl_storage, ensure};
 use frame_system::{self as system, ensure_root, ensure_signed};
 use node_primitives::TokenType;
-use sp_runtime::traits::{Member, Saturating, SimpleArithmetic};
+use sp_runtime::traits::{Member, Saturating, AtLeast32Bit};
 
 pub trait Trait: assets::Trait {
 	/// exchange rate
-	type ExchangeRate: Member + Parameter + SimpleArithmetic + Default + Copy + Into<<Self as assets::Trait>::Balance> + Into<<Self as assets::Trait>::Balance>;
-	type RatePerBlock: Member + Parameter + SimpleArithmetic + Default + Copy + Into<<Self as assets::Trait>::Balance> + Into<<Self as assets::Trait>::Balance> + Into<Self::ExchangeRate>;
+	type ExchangeRate: Member + Parameter + AtLeast32Bit + Default + Copy + Into<<Self as assets::Trait>::Balance> + Into<<Self as assets::Trait>::Balance>;
+	type RatePerBlock: Member + Parameter + AtLeast32Bit + Default + Copy + Into<<Self as assets::Trait>::Balance> + Into<<Self as assets::Trait>::Balance> + Into<Self::ExchangeRate>;
 
 	/// event
 	type Event: From<Event> + Into<<Self as frame_system::Trait>::Event>;
